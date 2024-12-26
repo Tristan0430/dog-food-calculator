@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>狗狗每日喂食量计算器</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      width: 90%;
+      max-width: 400px;
+      background: #ffffff;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 16px;
+      color: #333;
+    }
+    .form-group {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    label {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 6px;
+      color: #555;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      box-sizing: border-box;
+    }
+    input:focus {
+      border-color: #007bff;
+      outline: none;
+      background-color: #fff;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      color: #fff;
+      background: linear-gradient(90deg, #007bff, #0056b3);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      background: linear-gradient(90deg, #0056b3, #003d80);
+    }
+    .tabs {
+      margin-top: 20px;
+    }
+    .tab-buttons {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 10px;
+    }
+    .tab-buttons button {
+      flex: 1;
+      padding: 10px;
+      background: #f9f9f9;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: #555;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .tab-buttons button.active {
+      border-bottom: 2px solid #007bff;
+      color: #007bff;
+      font-weight: bold;
+    }
+    .tab-content {
+      display: none;
+      text-align: left;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .tab-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    .tab-content th, .tab-content td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    .tab-content th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+    }
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.6rem;
+      }
+      button {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 自定义模态框 -->
+  <div id="resultModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: #fff; width: 90%; max-width: 400px; border-radius: 10px; padding: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
+      <h2 id="modalTitle" style="margin-bottom: 15px; font-size: 1.5rem; color: #333;">计算结果</h2>
+      <p id="modalMessage" style="margin-bottom: 20px; font-size: 1.1rem; color: #555;"></p>
+      <button id="closeModalButton" style="padding: 10px 20px; font-size: 1rem; background: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;">关闭</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1>🐾 狗狗每日喂食量计算器</h1>
+    <div class="tabs">
+      <!-- Tab 按钮 -->
+      <div class="tab-buttons">
+        <button data-tab="tab1" class="active">计算器</button>
+        <button data-tab="tab2">喂食系数表</button>
+        <button data-tab="tab3">狗粮热量表</button>
+      </div>
+      
+      <!-- Tab 1: 计算器 -->
+      <div id="tab1" class="tab-content active">
+        <form id="dogFoodForm">
+          <div class="form-group">
+            <label for="weight">狗狗体重（kg）:</label>
+            <input type="number" id="weight" name="weight" step="any" placeholder="输入狗狗当前实际体重" required>
+          </div>
+          <div class="form-group">
+            <label for="coefficient">喂食系数:</label>
+            <input type="number" id="coefficient" name="coefficient" step="any" placeholder="参照喂食系数表，根据胖瘦适当调整" required>
+          </div>
+          <div class="form-group">
+            <label for="calories">狗粮热量（kcal/kg）:</label>
+            <input type="number" id="calories" name="calories" step="any" placeholder="查狗粮包装或狗粮热量表" required>
+          </div>
+          <button type="submit">计算喂食量</button>
+        </form>
+        <!-- 用于显示计算结果
+        <div id="result" style="margin-top: 20px; font-size: 1.1rem; font-weight: bold; color: #333;"></div> -->
+      </div>
+
+      
+      <!-- Tab 2: 喂食系数表 -->
+      <div id="tab2" class="tab-content">
+        <p style="color: red; text-align: center; font-size: 0.9rem; margin-bottom: 10px;">
+          根据增重或减肥需要适当调整喂食系数
+        </p>
+        <table>
+          <tr>
+            <th>情况</th>
+            <th>喂食系数</th>
+          </tr>
+          <tr>
+            <td>幼犬（0-4个月）</td>
+            <td>3.0</td>
+          </tr>
+          <tr>
+            <td>幼犬（4个月以上）</td>
+            <td>2.0</td>
+          </tr>
+          <tr>
+            <td>绝育</td>
+            <td>1.6</td>
+          </tr>
+          <tr>
+            <td>未绝育</td>
+            <td>1.8</td>
+          </tr>
+          <tr>
+            <td>不活跃/有肥胖倾向</td>
+            <td>1.2-1.4</td>
+          </tr>
+          <tr>
+            <td>肥胖/需减肥</td>
+            <td>1.0</td>
+          </tr>
+          <tr>
+            <td>需要增肥</td>
+            <td>1.2-1.8</td>
+          </tr>
+          <tr>
+            <td>活跃/工作犬</td>
+            <td>2.0-5.0</td>
+          </tr>
+          <tr>
+            <td>怀孕</td>
+            <td>1.6-2.0</td>
+          </tr>
+          <tr>
+            <td>哺乳</td>
+            <td>2.0-6.0</td>
+          </tr>
+        </table>
+      </div>
+      
+      <!-- Tab 3: 狗粮热量表 -->
+      <div id="tab3" class="tab-content">
+        <table>
+          <tr>
+            <th>狗粮</th>
+            <th>热量（kcal/kg）</th>
+          </tr>
+          <tr><td>Now无谷老龄犬</td><td>3252</td></tr>
+          <tr><td>wellness无谷低脂</td><td>3300</td></tr>
+          <tr><td>Rawz三文鱼(白底粉标)</td><td>3371</td></tr>
+          <tr><td>Rawz鸭肉(白底橙标)</td><td>3384</td></tr>
+          <tr><td>莲花全犬无谷火鸡鲱鱼</td><td>3460</td></tr>
+          <tr><td>莲花全犬无谷鸭肉</td><td>3559</td></tr>
+          <tr><td>wellness无谷海洋鱼</td><td>3568</td></tr>
+          <tr><td>openfarm鸡肉火鸡肉</td><td>3600</td></tr>
+          <tr><td>openfarm草饲牛肉</td><td>3625</td></tr>
+          <tr><td>渴望Senior</td><td>3630</td></tr>
+          <tr><td>Farmina鲱鱼藜麦</td><td>3665</td></tr>
+          <tr><td>wellness无谷火鸡肉(橙)</td><td>3698</td></tr>
+          <tr><td>纽翠斯鸡肉</td><td>3700</td></tr>
+          <tr><td>Rawz鸡肉火鸡(橙底绿标)</td><td>3710</td></tr>
+          <tr><td>Rawz三文鱼鸡肉(橙底蓝标)</td><td>3730</td></tr>
+          <tr><td>Now无谷小型犬</td><td>3741</td></tr>
+          <tr><td>wellness小型犬无谷火鸡肉(粉)</td><td>3746</td></tr>
+          <tr><td>渴望Six Fish</td><td>3860</td></tr>
+          <tr><td>爱肯拿海洋盛宴</td><td>3850</td></tr>
+          <tr><td>爱肯拿幼犬粮</td><td>3850</td></tr>
+          <tr><td>爱肯拿经典鸡肉</td><td>4080</td></tr>
+          <tr><td>福摩鸭肉兔肉</td><td>3729</td></tr>
+          <tr><td>福摩鸡肉芝士</td><td>3702</td></tr>
+          <tr><td>福摩牛肉奶酪</td><td>3765</td></tr>
+          <tr><td>福摩猎鸟</td><td>3709</td></tr>
+          <tr><td>福摩三文鱼鸡鸭蔬果</td><td>3789</td></tr>
+          <tr><td>福摩鸭肉甜薯</td><td>3652</td></tr>
+          <tr><td>福摩三文鱼蔬菜</td><td>3706</td></tr>
+          <tr><td>福摩鸡肉蔬菜</td><td>3706</td></tr>
+          <tr><td>福摩全鱼</td><td>3658</td></tr>
+          <tr><td>百利无谷鸡</td><td>4406</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tab 切换逻辑
+    const tabButtons = document.querySelectorAll('.tab-buttons button');
+    const tabs = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // 移除所有按钮的 active 状态
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        // 隐藏所有 tab 内容
+        tabs.forEach(tab => tab.classList.remove('active'));
+        // 激活当前按钮和对应的 tab 内容
+        button.classList.add('active');
+        document.getElementById(button.dataset.tab).classList.add('active');
+      });
+    });
+
+    // 表单提交逻辑
+    document.getElementById('dogFoodForm').addEventListener('submit', async function (event) {
+      event.preventDefault(); // 阻止表单的默认提交行为
+
+      // 获取用户输入的数据
+      const weight = parseFloat(document.getElementById('weight').value);
+      const coefficient = parseFloat(document.getElementById('coefficient').value);
+      const calories = parseFloat(document.getElementById('calories').value);
+
+      // 构造发送到后端的 JSON 数据
+      const requestData = { weight, coefficient, foodME: calories };
+
+      // 模态框相关元素
+      const resultModal = document.getElementById('resultModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalMessage = document.getElementById('modalMessage');
+      const closeModalButton = document.getElementById('closeModalButton');
+
+      try {
+        // 调用后端 API，通过 HTTPS 发送请求
+        const response = await fetch('https://dog.triis.top/calculate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestData) // 将请求数据转化为 JSON 格式
+        });
+
+        // 解析后端响应
+        const result = await response.json();
+
+        if (response.ok) {
+          // 设置模态框内容为成功信息
+          modalTitle.style.color = 'green';
+          modalMessage.textContent = `每日喂食量为：${result.foodAmount.toFixed(2)} 克`;
+        } else {
+          // 设置模态框内容为错误信息
+          modalTitle.style.color = 'red';
+          modalMessage.textContent = `错误：${result.error}`;
+        }
+
+        // 显示模态框
+        resultModal.style.display = 'flex';
+      } catch (error) {
+        // 捕获网络或其他异常
+        modalTitle.style.color = 'red';
+        modalMessage.textContent = `网络错误或服务器不可用：${error.message}`;
+        resultModal.style.display = 'flex'; // 显示模态框
+      }
+
+      // 模态框关闭事件
+      closeModalButton.addEventListener('click', () => {
+        resultModal.style.display = 'none'; // 隐藏模态框
+      });
+    });
+
+  </script>
+</body>
+</html>
