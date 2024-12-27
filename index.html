@@ -122,6 +122,30 @@
         font-size: 0.9rem;
       }
     }
+    .custom-select {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    appearance: none; /* 隐藏默认箭头 */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%204%205%22%3E%3Cpath%20fill%3D%22%23007bff%22%20d%3D%22M2%200l2%202H0z%22/%3E%3C/svg%3E'); /* 自定义箭头 */
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 10px 10px;
+  }
+  .custom-select:focus {
+    border-color: #007bff;
+    background-color: #ffffff;
+    outline: none;
+  }
+  .custom-select:hover {
+    border-color: #007bff;
+    background-color: #ffffff;
+  }
   </style>
 </head>
 <body>
@@ -158,12 +182,13 @@
           <div class="form-group">
             <label for="calories">狗粮热量值:</label>
             <div style="display: flex; align-items: center;">
-              <input type="number" id="calories" name="calories" step="any" placeholder="输入狗粮热量值" required style="flex: 1;">
-              <select id="caloriesUnit" name="caloriesUnit" style="margin-left: 10px;">
+              <input type="number" id="calories" name="calories" step="any" placeholder="输入狗粮热量值" required style="flex: 1; margin-right: 10px;">
+              <select id="caloriesUnit" name="caloriesUnit" class="custom-select">
                 <option value="kcal/kg">kcal/kg</option>
-                <option value="kj/g">kJ/g</option>
+                <option value="kj/100g">kJ/100g</option>
               </select>
             </div>
+          </div>
           </div>
           <button type="submit">计算喂食量</button>
         </form>
