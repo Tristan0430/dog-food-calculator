@@ -156,8 +156,14 @@
             <input type="number" id="coefficient" name="coefficient" step="any" placeholder="参照喂食系数表，根据胖瘦适当调整" required>
           </div>
           <div class="form-group">
-            <label for="calories">狗粮热量（kcal/kg）:</label>
-            <input type="number" id="calories" name="calories" step="any" placeholder="查狗粮包装或狗粮热量表" required>
+            <label for="calories">狗粮热量值:</label>
+            <div style="display: flex; align-items: center;">
+              <input type="number" id="calories" name="calories" step="any" placeholder="输入狗粮热量值" required style="flex: 1;">
+              <select id="caloriesUnit" name="caloriesUnit" style="margin-left: 10px;">
+                <option value="kcal/kg">kcal/kg</option>
+                <option value="kj/g">kJ/g</option>
+              </select>
+            </div>
           </div>
           <button type="submit">计算喂食量</button>
         </form>
