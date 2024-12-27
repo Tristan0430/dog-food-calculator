@@ -146,6 +146,36 @@
     border-color: #007bff;
     background-color: #ffffff;
   }
+  /* 模态框样式 */
+  #resultModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+  }
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
+  .modal-content button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+  }
+  .modal-content button:hover {
+    background-color: #0056b3;
+  }
   </style>
 </head>
 <body>
@@ -310,6 +340,17 @@
       });
     });
 
+    // 动态更新输入框占位符
+    document.getElementById('caloriesUnit').addEventListener('change', function () {
+      const selectedUnit = this.value;
+      const caloriesInput = document.getElementById('calories');
+      if (selectedUnit === 'kj/100g') {
+        caloriesInput.placeholder = '输入狗粮热量值 (单位: kJ/100g)';
+      } else {
+        caloriesInput.placeholder = '输入狗粮热量值 (单位: kcal/kg)';
+      }
+    });
+
     // 表单提交逻辑
     document.getElementById('dogFoodForm').addEventListener('submit', async function (event) {
       event.preventDefault(); // 阻止表单的默认提交行为
@@ -317,7 +358,13 @@
       // 获取用户输入的数据
       const weight = parseFloat(document.getElementById('weight').value);
       const coefficient = parseFloat(document.getElementById('coefficient').value);
-      const calories = parseFloat(document.getElementById('calories').value);
+      let calories = parseFloat(document.getElementById('calories').value);
+      const unit = document.getElementById('caloriesUnit').value;
+
+      // 单位转换：如果是 kJ/100g，则转换为 kcal/kg
+      if (unit === 'kj/100g') {
+        calories = calories * 2.39; // kJ/100g 转换为 kcal/kg
+      }
 
       // 构造发送到后端的 JSON 数据
       const requestData = { weight, coefficient, foodME: calories };
