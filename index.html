@@ -326,8 +326,8 @@
   </div>
   
   <!-- 页面底部备案信息 -->
-  <footer style="margin-top: 20px; text-align: center; font-size: 0.9rem; color: #555; padding: 10px; background-color: #f9f9f9; border-top: 1px solid #ddd;">
-    <a href="https://beian.miit.gov.cn/" target="_blank" style="text-decoration: none; color: #007bff;">鄂 ICP 备 2024088057 号 - 2</a>
+  <footer class="footer">
+    <a href="https://beian.miit.gov.cn/" target="_blank" class="beian-link">鄂 ICP 备 2024088057 号 - 2</a>
   </footer>
   
   <script>
@@ -419,7 +419,35 @@
         resultModal.style.display = 'none'; // 隐藏模态框
       });
     });
+    
+  <style>
+  /* 页脚整体样式 */
+  .footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f9f9f9; /* 背景颜色与页面整体风格一致 */
+    text-align: center;
+    padding: 10px 0; /* 增加上下内边距，保证内容不拥挤 */
+    border-top: 1px solid #ddd; /* 添加分隔线 */
+    font-size: 0.85rem; /* 字体稍小，优雅简洁 */
+    z-index: 1000;
+  }
 
+  /* 备案超链接样式 */
+  .beian-link {
+    color: #007bff; /* 蓝色链接，与页面主色调一致 */
+    text-decoration: none; /* 去掉下划线 */
+    transition: color 0.3s ease; /* 添加鼠标悬停的渐变效果 */
+  }
+
+  /* 鼠标悬停时的效果 */
+  .beian-link:hover {
+    color: #0056b3; /* 深蓝色，增强交互反馈 */
+    text-decoration: underline; /* 悬停时显示下划线 */
+  }
+</style>
   </script>
 </body>
 </html>
